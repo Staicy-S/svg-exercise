@@ -9,6 +9,10 @@ export function DeviceMotionTest() {
     x: 0,
     y: 0,
   });
+  const [smartphoneSize, setSmartphoneSize] = useState({
+    width: 0,
+    height: 0,
+  });
   const CONFIG = { ballWidth: 150, ballHeight: 150 };
 
   const requestDeviceMotionPermission = async () => {
@@ -42,33 +46,44 @@ export function DeviceMotionTest() {
     // Update the position of the ball based on device motion data
     // You can use data.rotation for tilting the device
     // Example: Update the x and y position based on device motion
-    const newX = location.x + data.rotation.gamma * 10; // Adjust the multiplier as needed
-    const newY = location.y + data.rotation.beta * 10; // Adjust the multiplier as needed
-    setLocation({ x: newX, y: newY });
+    // const newX = location.x + data.rotation.gamma * 10;
+    // const newY = location.y + data.rotation.beta * 10;
+    const testX =
+      (smartphoneSize.width / 2) * (1 + (data.rotation.gamma / Math.PI) * 10);
+    const testY =
+      (smartphoneSize.height / 2) * (1 + (data.rotation.beta / Math.PI) * 10);
+    console.log(smartphoneSize);
+    setLocation({ x: testX, y: testY });
   };
 
   useEffect(() => {
     // Add a listener for device motion updates when the component mounts
-    deviceMotionListener.current =
-      Sensors.DeviceMotion.addListener(handleDeviceMotion);
-
+    if (smartphoneSize != 0 && !deviceMotionListener.current) {
+      deviceMotionListener.current =
+        Sensors.DeviceMotion.addListener(handleDeviceMotion);
+    }
     // Remove the listener when the component unmounts
     return () => {
       if (deviceMotionListener.current) {
         deviceMotionListener.current.remove();
       }
     };
-  }, []);
+  }, [smartphoneSize]);
 
   return (
     <View
       style={{ width: "100%", height: "100%", backgroundColor: "blue" }}
-      onLayout={({ nativeEvent }) =>
+      onLayout={({ nativeEvent }) => {
         setLocation({
           x: nativeEvent.layout.width / 2,
           y: nativeEvent.layout.height / 2,
-        })
-      }
+        });
+        setSmartphoneSize({
+          width: nativeEvent.layout.width,
+          height: nativeEvent.layout.height,
+        });
+        console.log("nativeEvvent:", nativeEvent.layout);
+      }}
     >
       <Svg
         height={CONFIG.ballHeight}

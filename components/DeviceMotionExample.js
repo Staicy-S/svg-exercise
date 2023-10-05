@@ -1,7 +1,7 @@
 import * as React from "react";
 import { View } from "react-native";
 import Svg, { Circle } from "react-native-svg";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Accelerometer,
   Barometer,
@@ -19,6 +19,16 @@ export function DeviceMotionExample() {
     y: 0,
   });
   const CONFIG = { ballWidth: 150, ballHeight: 150 };
+
+  useEffect(() => {
+    const subscription = DeviceMotion.addListener((event) => {
+      console.log(event);
+    });
+    console.log("Listener added");
+    return () => {
+      subscription.remove();
+    };
+  }, []);
 
   return (
     <View

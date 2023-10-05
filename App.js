@@ -16,8 +16,8 @@ export default function App() {
         {/* <SvgCircle /> */}
         {/* <SvgMoveableCircle /> */}
         {/* <PinchableCircle /> */}
-        <DeviceMotionExample />
-        {/* <DeviceMotionTest /> */}
+        {/* <DeviceMotionExample /> */}
+        <DeviceMotionTest />
         <StatusBar style="auto" />
       </View>
     </GestureHandlerRootView>
